@@ -1,0 +1,17 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!-- "Mark Favorite", should appear as action button if possible -->
+    <item
+        android:id="@+id/sign_out"
+        android:title="Signout"
+        app:showAsAction="never"
+        android:visible="true"/>
+
+    <!-- Settings, should always be in the overflow -->
+    <item android:id="@+id/revoke_access"
+        android:title="Revoke Access"
+        app:showAsAction="never"
+        android:visible="true"/>
+
+</menu>

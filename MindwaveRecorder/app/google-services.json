@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "965770314891",
+    "project_id": "mindwaverecorder"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:965770314891:android:30214ab7dfd24bc1",
+        "android_client_info": {
+          "package_name": "naveenpatidar.mindwaverecorder"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "965770314891-0h4g665q2v4vbrpkp83irklcsibvrv2n.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "naveenpatidar.mindwaverecorder",
+            "certificate_hash": "ec24b07df0a6bec39cb6a4feea7f50c22d69bf98"
+          }
+        },
+        {
+          "client_id": "965770314891-rsmu9tqiiut25frs2m0j9mv22qteissn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCQAORvKbzLJi8zsTyu87yuSA8yvhKqvLs"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

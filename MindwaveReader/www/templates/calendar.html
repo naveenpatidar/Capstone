@@ -1,0 +1,46 @@
+<div class="ionic_Calendar" style="margin-left: 5px;margin-right: 5px;">
+    <div class="calendar_Date" on-swipe-left="selectedMonthNextClick()" on-swipe-right="selectedMonthPrevClick()" ng-show="UICalendarDisplay.Date">
+        <div class="row" style=" background-color: #3F3F3F;  color: white;">
+            <div style="text-align: center;width: 40px;padding-top: 4px" ng-click="selectedMonthPrevClick()"><i class="icon ion-chevron-left"></i></div>
+            <div class="col txtCenter" ng-click="UIdisplayDatetoMonth()"><b>{{dislayMonth}} {{displayYear}}</b></div>
+            <div class="col txtCenter" ng-click="Today()"><b>Today</b></div>
+            <div style="text-align: center;width: 40px;padding-top: 4px" ng-click="selectedMonthNextClick()"><i class="icon ion-chevron-right"></i></div>
+        </div>
+        <div class="row Daysheading Daysheading_Label" style="background-color: #383737; color: white;">
+            <div class="col">Su</div>
+            <div class="col">Mo</div>
+            <div class="col">Tu</div>
+            <div class="col">We</div>
+            <div class="col">Th</div>
+            <div class="col">Fr</div>
+            <div class="col">Sa</div>
+        </div>
+        <div class="row Daysheading DaysDisplay" style="background-color: #F8F8F8" ng-repeat="rowVal in datesDisp  track by $index" ng-class="{'marginTop0':$first}">
+            <div class="col" style="border-radius: 50%;" ng-repeat="colVal in rowVal  track by $index" ng-class="{'fadeDateDisp':(colVal.type == 'oldMonth' || colVal.type == 'newMonth'), 'selDate':(colVal.date == displayDate && colVal.type == 'currentMonth')}" ng-click="selectedDateClick(colVal)">{{colVal.date}}</div>
+        </div>
+    </div>
+    <div class="calendar_Month" on-swipe-left="selectedMonthYearNextClick()" on-swipe-right="selectedMonthYearPrevClick()" ng-show="UICalendarDisplay.Month">
+        <div class="row" style=" background-color: #3F3F3F;  color: white;">
+            <div style="text-align: center;width: 40px;padding-top: 4px" ng-click="selectedMonthYearPrevClick()"><i class="icon ion-chevron-left"></i></div>
+            <div class="col txtCenter" ng-click="UIdisplayMonthtoYear()"><b>{{displayYear}}</b></div>
+            <div class="col txtCenter" ng-click="Today()"><b>Today</b></div>
+            <div style="text-align: center;width: 40px;padding-top: 4px" ng-click="selectedMonthYearNextClick()"><i class="icon ion-chevron-right"></i></div>
+        </div>
+        <div style="background-color: #F8F8F8" class="row txtCenter MonthsDisplay" ng-repeat="rowVal in calMonths  track by $index" ng-class="{'marginTop0':$first}">
+            <div class="col" style="border-radius: 50%;" ng-repeat="colVal in rowVal  track by $index" ng-class="(colVal.name == shortMonth) ? 'selMonth' : 'NonSelMonth'" ng-click="selectedMonthClick(colVal.id)">{{colVal.name}}</div>
+        </div>
+    </div>
+    <div class="calendar_Year" on-swipe-left="selectedDecadeNextClick()" on-swipe-right="selectedDecadePrevClick()" ng-show="UICalendarDisplay.Year">
+        <div class="row" style=" background-color: #3F3F3F;  color: white;">
+            <div style="text-align: center;width: 40px;padding-top: 4px" ng-click="selectedDecadePrevClick()"><i class="icon ion-chevron-left"></i></div>
+            <div class="col txtCenter"><b>{{startYearDisp+1}}-{{endYearDisp-1}}</b></div>
+            <div class="col txtCenter" ng-click="Today()"><b>Today</b></div>
+            <div style="text-align: center;width: 40px;padding-top: 4px" ng-click="selectedDecadeNextClick()"><i class="icon ion-chevron-right"></i></div>
+        </div>
+        <div class="row txtCenter YearsDisplay" style="background-color: #F8F8F8" ng-repeat="nx in []| rangecal:3" ng-class="{'marginTop0':$first}">
+            <div class="col" style="border-radius: 50%" ng-repeat="n in [] | rangecal:4" ng-class="{ 'fadeYear': (((startYearDisp+nx+nx+nx+nx+n) == startYearDisp)||((startYearDisp+nx+nx+nx+nx+n) == endYearDisp)), 'selYear': ((startYearDisp+nx+nx+nx+nx+n) == displayYear) }"
+                ng-click="selectedYearClick((startYearDisp+nx+nx+nx+nx+n))">{{startYearDisp+nx+nx+nx+nx+n}}</div>
+        </div>
+    </div>
+    <!--<div ng-click="Today()" style="text-align: center">Today</div>-->
+</div>

@@ -1,0 +1,33 @@
+<ion-view view-title="Home">
+    <ion-content scroll="true" has-bouncing="false">
+        <div class="list">
+        </div>
+        <!-- 
+					display : used for ngmodel to fetch the selected date.
+					dateformat : used to put the Format for display 
+				-->
+        <my-calendar display="dateValue" dateformat="'dd-MMM-yyyy'"></my-calendar>
+        <hr/>
+        <div>
+            <label class="item item-input">
+			<input type="text" ng-model="dateValue" disabled>
+		</label>
+            <!--            <button class="button" ng-click="deleteAllFile()">Delete Files</button>
+            <span>&nbsp;</span>-->
+            <!--<button class="button" ng-click="showFile()">Show Files</button>
+            <span>&nbsp;</span>-->
+            <button class="button" ng-click="emailFile()">Email Files</button>
+            <!--           <span>&nbsp;</span>
+            <button class="button" ng-click="showAvg()">Show Avg</button>-->
+            <div>-------------------------------------------</div>
+            <!--<div ng-bind-html="showFileName"></div>-->
+            <div ng-bind-html="avgdiv"></div>
+            <ion-list>
+                <ion-item ng-repeat="file in files" ng-click="readFileAtGivenPath(file.name)">
+                    {{file.name}}
+                </ion-item>
+            </ion-list>
+            <div ng-bind-html="selectdiv"></div>
+        </div>
+    </ion-content>
+</ion-view>

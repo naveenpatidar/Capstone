@@ -1,0 +1,34 @@
+<ion-side-menus enable-menu-with-back-views="false">
+    <ion-side-menu-content drag-content="false">
+        <ion-nav-bar class="bar-stable">
+            <ion-nav-back-button>
+            </ion-nav-back-button>
+
+            <ion-nav-buttons side="left">
+                <button class="button button-icon button-clear ion-navicon" menu-toggle="left">
+        </button>
+            </ion-nav-buttons>
+        </ion-nav-bar>
+        <ion-nav-view name="menuContent"></ion-nav-view>
+    </ion-side-menu-content>
+
+    <ion-side-menu side="left" width="200">
+        <ion-header-bar class="bar-assertive">
+
+            <h1 menu-close class="title"> <span class="ion-ios-pulse-strong"></span> Mindwave Reader</h1>
+        </ion-header-bar>
+        <ion-content class="sidemenucustom">
+            <ion-list>
+                <ion-item menu-close href="#/app/home">
+                    <span class="ion-ios-home">&nbsp;&nbsp;</span> Home
+                </ion-item>
+                <ion-item menu-close href="#/app/profile">
+                    <span class="ion-android-person">&nbsp;&nbsp;</span> Profile
+                </ion-item>
+                <ion-item menu-close href="#/app/search">
+                    <span class="ion-ios-search-strong">&nbsp;&nbsp;</span> Search
+                </ion-item>
+            </ion-list>
+        </ion-content>
+    </ion-side-menu>
+</ion-side-menus>
