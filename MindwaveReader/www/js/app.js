@@ -134,7 +134,7 @@ modu.directive('myCalendar', function() {
                 } else {
                     var format = $scope.dateformat;
                 }
-                $scope.display = $filter('date')(timeStamp, format);
+                $rootScope.todays_date = $filter('date')(timeStamp, format);
             }
 
             //Onload Display Current Date

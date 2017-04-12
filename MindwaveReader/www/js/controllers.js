@@ -98,56 +98,29 @@ angular.module('starter.controllers', [])
 
 
     $rootScope.showFile = function(_date) {
-
-            // var filenames = "";
-            // // for (i = 0; i < 10; i++) {
-            // var name = "Naveen" + i + ".txt";
-            // console.log(name);
-            // $cordovaFile.checkFile(cordova.file.externalDataDirectory, name)
-            //     .then(function(success) {
-            //         filenames = filenames + name;
-            //         console.log(filenames + "Patidar");
-            //         $scope.selectdiv = filenames;
-            //     }, function(error) {
-            //         // error
-            //     });
-            // // }
-
-            // // $scope.selectdiv = filenames;
-            //console.log("Show file" + _date);
-            //$scope.showFileName = _date;
-            window.resolveLocalFileSystemURL(cordova.file.externalDataDirectory + "/naveen",
+            $scope.files = [];
+            $scope.selectdiv = "";
+            $scope.avgdiv = "";
+            window.resolveLocalFileSystemURL(cordova.file.externalDataDirectory + "/naveen/" + _date,
                 function(fileSystem) {
                     var reader = fileSystem.createReader();
                     reader.readEntries(
                         function(entries) {
                             console.log(entries.length);
-                            //var fname = "";
-                            $scope.files = [];
                             for (i = 0; i < entries.length; i++) {
                                 if (entries[i].isFile) {
                                     console.log(entries[i].name);
                                     //fname = fname + entries[i].name;
-                                    if (entries[i].name.includes(_date)) {
-                                        $scope.files.push({
-                                            name: entries[i].name
-                                        });
-                                    }
-
+                                    //if (entries[i].name.includes(_date)) {
+                                    $scope.files.push({
+                                        name: entries[i].name
+                                    });
+                                    //}
                                 }
-
-                                $scope.selectdiv = "";
-                                $scope.$apply();
                             }
+                            $scope.selectdiv = "";
+                            $scope.$apply();
                             $scope.showAvg(_date);
-                            /*if ("06-Apr-2017 10-12-34-234".includes(_date)) {
-                                $scope.showAvg();
-                            } else {
-                                $scope.avgdiv = "";
-                                $scope.$apply();
-                            }*/
-
-                            // $scope.selectdiv = fname;
                         },
                         function(err) {
                             console.log(err);
@@ -165,18 +138,15 @@ angular.module('starter.controllers', [])
 
 
     $scope.readFileAtGivenPath = function(textfilename) {
-            $cordovaFile.readAsText(cordova.file.externalDataDirectory + "/naveen", textfilename)
+            var dir = textfilename.split(" ")[0];
+            $cordovaFile.readAsText(cordova.file.externalDataDirectory + "/naveen/" + dir, textfilename)
                 .then(function(success) {
                     var str = success.split(" ");
                     var temp = 0;
                     for (i = 0; i < str.length; i++) {
-                        /*temp = temp + str[i] + "<br/>";*/
                         temp = temp + parseFloat(str[i]);
                     }
-                    /*$scope.selectdiv = temp;*/
                     $scope.selectdiv = temp / 10000;
-                    // $scope.selectdiv = success;
-                    //console.log(success);
                 }, function(error) {
                     // error
                 });
@@ -192,25 +162,28 @@ angular.module('starter.controllers', [])
     $scope.showAvg = function(_date) {
             $scope.avgdiv = "";
             $scope.$apply();
-            window.resolveLocalFileSystemURL(cordova.file.externalDataDirectory + "/naveen",
+            window.resolveLocalFileSystemURL(cordova.file.externalDataDirectory + "/naveen/" + _date,
                 function(fileSystem) {
                     var reader = fileSystem.createReader();
                     reader.readEntries(
                         function(entries) {
                             var fileavg = [];
                             for (i = 0; i < entries.length; i++) {
-                                if (entries[i].isFile && entries[i].name.includes(_date)) {
+                                if (entries[i].isFile) {
                                     (function(i) {
-                                        $cordovaFile.readAsText(cordova.file.externalDataDirectory + "/naveen", entries[i].name)
+                                        $cordovaFile.readAsText(cordova.file.externalDataDirectory + "/naveen/" + _date, entries[i].name)
                                             .then(function(success) {
+                                                //if (entries[i].name.includes(_date)) {
                                                 var str = success.split(" ");
                                                 var temp = 0;
                                                 for (j = 0; j < str.length; j++) {
                                                     temp = temp + parseFloat(str[j]);
                                                 }
                                                 fileavg.push(temp / 10000);
+                                                //}
                                                 (function(fileavg) {
                                                     if (i == entries.length - 1) {
+                                                        // console.log("fileavg : inside if");
                                                         var avg = 0;
                                                         for (l = 0; l < fileavg.length; l++) {
                                                             avg = avg + fileavg[l];
@@ -223,6 +196,7 @@ angular.module('starter.controllers', [])
 
                                                     }
                                                 }(fileavg));
+
                                             }, function(error) {
                                                 console.log(error);
                                             });
@@ -253,34 +227,54 @@ angular.module('starter.controllers', [])
                     reader.readEntries(
                         function(entries) {
                             var filenames = [];
-                            for (i = 0; i < entries.length; i++) {
-                                if (entries[i].isFile) {
-                                    filenames.push(cordova.file.externalDataDirectory + "/naveen/" + entries[i].name);
+                            for (j = 0; j < entries.length; j++) {
+                                if (entries[j].isDirectory) {
+                                    (function(j) {
+                                        window.resolveLocalFileSystemURL(cordova.file.externalDataDirectory + "/naveen/" + entries[j].name,
+                                            function(innerfileSystem) {
+                                                var readers = innerfileSystem.createReader();
+                                                readers.readEntries(
+                                                    function(files) {
+                                                        for (i = 0; i < files.length; i++) {
+                                                            if (files[i].isFile) {
+                                                                filenames.push(cordova.file.externalDataDirectory + "/naveen/" + entries[j].name + "/" + files[i].name);
+                                                            }
+                                                            (function(filenames) {
+                                                                if (j == entries.length - 1) {
+                                                                    // code for sending email with attachments
+                                                                    $cordovaEmailComposer.isAvailable().then(function() {
+                                                                        // is available
+                                                                    }, function() {
+                                                                        // not available
+                                                                    });
+
+                                                                    var email = {
+                                                                        to: 'naveen15038@iiitd.ac.in',
+                                                                        attachments: filenames,
+                                                                        subject: 'Sensor Data File',
+                                                                        body: 'Files are attached below till today.',
+                                                                        isHtml: true
+                                                                    };
+
+                                                                    $cordovaEmailComposer.open(email).then(null, function() {
+                                                                        // user cancelled email
+                                                                    });
+                                                                }
+                                                            }(filenames));
+                                                        }
+                                                    },
+                                                    function(err) {
+                                                        console.log(err);
+                                                    }
+                                                );
+                                            },
+                                            function(err) {
+                                                console.log(err);
+                                            }
+                                        );
+                                    }(j));
                                 }
                             }
-
-                            // code for sending email with attachments
-                            $cordovaEmailComposer.isAvailable().then(function() {
-                                // is available
-                            }, function() {
-                                // not available
-                            });
-
-                            //var file1 = cordova.file.externalDataDirectory + "/naveen/Naveen0.txt";
-                            var email = {
-                                to: 'naveen15038@iiitd.ac.in',
-                                /*attachments: [
-                                    file1, file1
-                                ],*/
-                                attachments: filenames,
-                                subject: 'Sensor Data File',
-                                body: 'Files are attached below till today.',
-                                isHtml: true
-                            };
-
-                            $cordovaEmailComposer.open(email).then(null, function() {
-                                // user cancelled email
-                            });
                         },
                         function(err) {
                             console.log(err);
@@ -291,49 +285,141 @@ angular.module('starter.controllers', [])
                     console.log(err);
                 }
             );
+
+
+
         },
         function(err) {
             console.log(err);
         }
 
-    /*
-        //copy file to external storage
-        $scope.copyFiles = function() {
-                $cordovaFile.copyDir(cordova.file.externalDataDirectory, "naveen", cordova.file.externalDataDirectory, "naveen")
-                    .then(function(success) {
-                        console.log("Successfully copied");
-                        $scope.emailFile();
-                    }, function(error) {
-                        // error
-                    });
+    //plot graph
+    $scope.plotGraph = function() {
+            var month_year = $rootScope.todays_date.substring(3, 11);
+            //          var deferred = $q.defer();
+            window.resolveLocalFileSystemURL(cordova.file.externalDataDirectory + "/naveen",
+                function(fileSystem) {
+                    var reader = fileSystem.createReader();
+                    reader.readEntries(
+                        function(entries) {
+                            var total_dirs = 0;
+                            var curr_count = 0;
+                            for (k = 0; k < entries.length; k++) {
+                                if (entries[k].name.includes(month_year)) {
+                                    total_dirs++;
+                                }
+                            }
+                            var filenames = [];
+                            for (j = 0; j < entries.length; j++) {
+                                if (entries[j].isDirectory) {
+                                    curr_count++;
+                                    (function(j, curr_count, filenames) {
+                                        window.resolveLocalFileSystemURL(cordova.file.externalDataDirectory + "/naveen/" + entries[j].name,
+                                            function(innerfileSystem) {
+                                                var readers = innerfileSystem.createReader();
+                                                readers.readEntries(
+                                                    function(files) {
+                                                        for (i = 0; i < files.length; i++) {
+                                                            if (files[i].isFile) {
+                                                                //filenames.push(cordova.file.externalDataDirectory + "/naveen/" + entries[j].name + "/" + files[i].name);
+                                                                (function(i, j, filenames) {
+                                                                    $cordovaFile.readAsText(cordova.file.externalDataDirectory + "/naveen/" + entries[j].name, files[i].name)
+                                                                        .then(function(success) {
+                                                                            (function(filenames) {
+                                                                                var str = success.split(" ");
+                                                                                var temp = 0;
+                                                                                for (x = 0; x < str.length; x++) {
+                                                                                    temp = temp + parseFloat(str[x]);
+                                                                                }
+                                                                                var temp = temp / 10000;
+                                                                                //console.log("Filenamesare :" + files[i].name + temp);
+                                                                                filenames.push(files[i].name + " " + temp);
+                                                                                if (curr_count == total_dirs && i == files.length - 1) {
+                                                                                    filenames.sort();
+                                                                                    var msg = "";
+                                                                                    for (n = 0; n < filenames.length; n++) {
+                                                                                        msg = msg + filenames[n] + "<br/>";
+                                                                                    }
+                                                                                    $scope.avgdiv = msg;
+                                                                                }
+                                                                            }(filenames));
+                                                                        }, function(error) {
+                                                                            console.log(error);
+                                                                        });
+                                                                }(i, j, filenames));
+                                                            }
+                                                        }
 
-            },
-            function(err) {
-                console.log(err);
+                                                    },
+                                                    function(err) {
+                                                        console.log(err);
+                                                    }
+                                                );
+                                            },
+                                            function(err) {
+                                                console.log(err);
+                                            }
+                                        );
+                                    }(j, curr_count, filenames));
+                                }
+                            }
+                        },
+                        function(err) {
+                            console.log(err);
+                        }
+                    );
+                },
+                function(err) {
+                    //                deferred.reject();
+                    console.log(err);
+                }
+            );
+
+            /*            deferred.promise.then(function(data) {
+                            console.log("naveendaka::: " + data);
+                        }, function(error) {
+                            console.error(data);
+                        })*/
+
+        },
+        function(err) {
+            console.log(err);
+        }
+
+
+    //defer promise example
+    $scope.synch = function() {
+            var helloPromise = sayHelloAsync('naveen');
+            helloPromise.then(function(data) {
+                console.log("naveendaka: " + data);
+            }, function(error) {
+                console.error(data);
+            })
+        },
+        function(err) {
+            console.log(err);
+        }
+
+    $scope.sayHelloAsync = function(name) {
+            return function() {
+                var defer = $q.defer()
+                setTimeout(function() {
+                    if (name == 'naveen') {
+                        defer.resolve('Hello, ' + name + '!');
+                    } else {
+                        defer.reject('Greeting ' + name + ' is not allowed.');
+                    }
+                }, 1000);
+
+                return defer.promise
             }
+        },
+        function(err) {
+            console.log(err);
+        }
 
-        $scope.makeDire = function() {
-                $cordovaFile.createDir(cordova.file.externalDataDirectory, "naveen", false)
-                    .then(function(success) {
-                        $cordovaFile.createFile(cordova.file.externalDataDirectory + "/naveen", "Naveen0.txt", true)
-                            .then(function(success) {
-                                // success
-                                $scope.emailFile();
-                            }, function(error) {
-                                // error
-                            });
-
-                    }, function(error) {
-                        // error
-                    });
-
-            },
-            function(err) {
-                console.log(err);
-            }
-    */
-
-    /*-------------------------------------------------------------------------------------*/
 })
+
+
 
 .controller('ItemlistCtrl', function($scope, $stateParams) {});
