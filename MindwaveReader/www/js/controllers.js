@@ -41,7 +41,7 @@ angular.module('starter.controllers', [])
     };
 })
 
-.controller('HomeCtrl', function($scope, $rootScope, $cordovaFile, $cordovaEmailComposer) {
+.controller('HomeCtrl', function($scope, $rootScope, $cordovaFile, $cordovaEmailComposer, $q) {
     $scope.deleteAllFile = function() {
             /*   console.log("Directory inside");
                $cordovaFile.removeRecursively(cordova.file.externalDataDirectory, "")
@@ -295,129 +295,150 @@ angular.module('starter.controllers', [])
 
     //plot graph
     $scope.plotGraph = function() {
-            var month_year = $rootScope.todays_date.substring(3, 11);
-            //          var deferred = $q.defer();
-            window.resolveLocalFileSystemURL(cordova.file.externalDataDirectory + "/naveen",
-                function(fileSystem) {
-                    var reader = fileSystem.createReader();
-                    reader.readEntries(
-                        function(entries) {
-                            var total_dirs = 0;
-                            var curr_count = 0;
-                            for (k = 0; k < entries.length; k++) {
-                                if (entries[k].name.includes(month_year)) {
-                                    total_dirs++;
-                                }
+        var month_year = $rootScope.todays_date.substring(3, 11);
+        window.resolveLocalFileSystemURL(cordova.file.externalDataDirectory + "/naveen",
+            function(fileSystem) {
+                var reader = fileSystem.createReader();
+                reader.readEntries(
+                    function(entries) {
+                        var total_dirs = 0;
+                        var curr_count = 0;
+                        for (k = 0; k < entries.length; k++) {
+                            if (entries[k].isDirectory && entries[k].name.includes(month_year)) {
+                                total_dirs++;
                             }
-                            var filenames = [];
-                            for (j = 0; j < entries.length; j++) {
-                                if (entries[j].isDirectory) {
-                                    curr_count++;
-                                    (function(j, curr_count, filenames) {
-                                        window.resolveLocalFileSystemURL(cordova.file.externalDataDirectory + "/naveen/" + entries[j].name,
-                                            function(innerfileSystem) {
-                                                var readers = innerfileSystem.createReader();
-                                                readers.readEntries(
-                                                    function(files) {
-                                                        for (i = 0; i < files.length; i++) {
-                                                            if (files[i].isFile) {
-                                                                //filenames.push(cordova.file.externalDataDirectory + "/naveen/" + entries[j].name + "/" + files[i].name);
-                                                                (function(i, j, filenames) {
-                                                                    $cordovaFile.readAsText(cordova.file.externalDataDirectory + "/naveen/" + entries[j].name, files[i].name)
-                                                                        .then(function(success) {
-                                                                            (function(filenames) {
-                                                                                var str = success.split(" ");
-                                                                                var temp = 0;
-                                                                                for (x = 0; x < str.length; x++) {
-                                                                                    temp = temp + parseFloat(str[x]);
-                                                                                }
-                                                                                var temp = temp / 10000;
-                                                                                //console.log("Filenamesare :" + files[i].name + temp);
-                                                                                filenames.push(files[i].name + " " + temp);
-                                                                                if (curr_count == total_dirs && i == files.length - 1) {
-                                                                                    filenames.sort();
-                                                                                    var msg = "";
-                                                                                    for (n = 0; n < filenames.length; n++) {
-                                                                                        msg = msg + filenames[n] + "<br/>";
-                                                                                    }
-                                                                                    $scope.avgdiv = msg;
-                                                                                }
-                                                                            }(filenames));
-                                                                        }, function(error) {
-                                                                            console.log(error);
-                                                                        });
-                                                                }(i, j, filenames));
-                                                            }
-                                                        }
-
-                                                    },
-                                                    function(err) {
-                                                        console.log(err);
-                                                    }
-                                                );
-                                            },
-                                            function(err) {
-                                                console.log(err);
-                                            }
-                                        );
-                                    }(j, curr_count, filenames));
-                                }
-                            }
-                        },
-                        function(err) {
-                            console.log(err);
                         }
-                    );
-                },
-                function(err) {
-                    //                deferred.reject();
-                    console.log(err);
-                }
-            );
+                        var filenames = [];
+                        var functionCalls = [];
+                        for (j = 0; j < entries.length; j++) {
+                            if (entries[j].isDirectory) {
+                                curr_count++;
+                                (function(j, curr_count, filenames) {
+                                    $scope.readDayDirectory(entries, filenames, i, j, total_dirs, curr_count, functionCalls);
+                                }(j, curr_count, filenames));
+                            }
+                        }
 
-            /*            deferred.promise.then(function(data) {
-                            console.log("naveendaka::: " + data);
-                        }, function(error) {
-                            console.error(data);
-                        })*/
-
-        },
-        function(err) {
-            console.log(err);
-        }
-
-
-    //defer promise example
-    $scope.synch = function() {
-            var helloPromise = sayHelloAsync('naveen');
-            helloPromise.then(function(data) {
-                console.log("naveendaka: " + data);
-            }, function(error) {
-                console.error(data);
-            })
-        },
-        function(err) {
-            console.log(err);
-        }
-
-    $scope.sayHelloAsync = function(name) {
-            return function() {
-                var defer = $q.defer()
-                setTimeout(function() {
-                    if (name == 'naveen') {
-                        defer.resolve('Hello, ' + name + '!');
-                    } else {
-                        defer.reject('Greeting ' + name + ' is not allowed.');
+                        var pgcounter = 0;
+                        var pgbar = setInterval(function() {
+                            if (pgcounter++ > 2) {
+                                $q.all(functionCalls).then(function(data) {
+                                        var msg = "";
+                                        data.sort();
+                                        console.log("naveensuccessfull " + data.length);
+                                        for (n = 0; n < data.length; n++) {
+                                            msg = msg + data[n] + "<br/>";
+                                        }
+                                        $scope.avgdiv = msg;
+                                    },
+                                    function(error) {
+                                        console.log(error);
+                                    })
+                                clearInterval(pgbar);
+                            }
+                            /* else {
+                                                            $scope.avgdiv = "please wait for " + (3 - pgcounter) + "seconds";
+                                                            $scope.$apply();
+                                                        }*/
+                        }, 1);
+                    },
+                    function(err) {
+                        console.log(err);
                     }
-                }, 1000);
-
-                return defer.promise
+                );
+            },
+            function(err) {
+                console.log(err);
             }
-        },
-        function(err) {
-            console.log(err);
+        );
+    }
+
+
+    $scope.readDayDirectory = function(entries, filenames, i, j, total_dirs, curr_count, functionCalls) {
+        window.resolveLocalFileSystemURL(cordova.file.externalDataDirectory + "/naveen/" + entries[j].name,
+            function(innerfileSystem) {
+                var readers = innerfileSystem.createReader();
+                readers.readEntries(
+                    function(files) {
+                        for (i = 0; i < files.length; i++) {
+                            if (files[i].isFile) {
+                                (function(i, j, filenames) {
+                                    functionCalls.push($scope.readSingleFile(entries, files, filenames, i, j, total_dirs, curr_count));
+                                }(i, j, filenames));
+                            }
+                        }
+
+                    },
+                    function(err) {
+                        console.log(err);
+                    }
+                );
+            },
+            function(err) {
+                console.log(err);
+            }
+        );
+    }
+
+
+    $scope.readSingleFile = function(entries, files, filenames, i, j, total_dirs, curr_count) {
+        var defer = $q.defer();
+        $cordovaFile.readAsText(cordova.file.externalDataDirectory + "/naveen/" + entries[j].name, files[i].name)
+            .then(function(success) {
+                (function(filenames) {
+                    var str = success.split(" ");
+                    var temp = 0;
+                    for (x = 0; x < str.length; x++) {
+                        temp = temp + parseFloat(str[x]);
+                    }
+                    var temp = temp / 10000;
+                    filenames.push(files[i].name + " " + temp);
+                    defer.resolve(files[i].name + " " + temp);
+                    /*if (curr_count == total_dirs && i == files.length - 1) {
+                        filenames.sort();
+                        var msg = "";
+                        for (n = 0; n < filenames.length; n++) {
+                            msg = msg + filenames[n] + "<br/>";
+                        }
+                        $scope.avgdiv = msg;
+                    }*/
+                }(filenames));
+            }, function(error) {
+                console.log(error);
+                defer.reject('naveenGreeting ' + name + ' is not allowed.');
+            });
+
+        return defer.promise;
+    }
+
+
+    /*    $scope.sayHelloAsync = function(name, i) {
+            var defer = $q.defer();
+            setTimeout(function() {
+                //Greet when your name is 'naveen'
+                if (name == 'naveen') {
+                    defer.resolve('naveenHello, ' + name + '! : ' + i);
+                } else {
+                    defer.reject('naveenGreeting ' + name + ' is not allowed.');
+                }
+            }, i);
+            return defer.promise
         }
 
+        $scope.click = function() {
+            var helloPromise = $scope.sayHelloAsync('naveen', 2000);
+            var helloPromise1 = $scope.sayHelloAsync('naveen', 1000);
+            var pros = [];
+            pros.push(helloPromise);
+            pros.push(helloPromise1);
+            $q.all(pros)
+                .then(function(data) {
+                        console.log("naveen" + data[0]);
+                    },
+                    function(error) {
+                        console.error("naveen" + data);
+                    })
+        }*/
 })
 
 
