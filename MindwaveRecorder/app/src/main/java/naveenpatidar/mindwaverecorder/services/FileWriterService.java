@@ -255,9 +255,10 @@ public class FileWriterService extends Service {
             //String name = file_name + (fileCounter) + ".txt";
             Date dNow = new Date( );
             SimpleDateFormat ft = new SimpleDateFormat("dd-MMM-yyyy hh-mm-ss-SSSS");
+            SimpleDateFormat ft1 = new SimpleDateFormat("dd-MMM-yyyy");
             String name = ft.format(dNow) + ".txt";
-            createDirectoryIfNeeded(sharedPath);
-            File file = new File(sharedPath + name);
+            createDirectoryIfNeeded(sharedPath+ft1.format(dNow)+"/");
+            File file = new File(sharedPath +ft1.format(dNow)+"/"+ name);
             fileOutputStream = new FileOutputStream(file, true);
             for (int i = 0; i < a.length; i++) {
                 fileOutputStream.write(Integer.toString(a[i]).getBytes());

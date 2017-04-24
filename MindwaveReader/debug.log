@@ -1,0 +1,12 @@
+[0407/034321.895:ERROR:crash_report_database_win.cc(426)] unexpected header
+[0407/035321.899:ERROR:crash_report_database_win.cc(426)] unexpected header
+[0407/035321.899:ERROR:crash_report_database_win.cc(426)] unexpected header
+[0407/035821.896:ERROR:crash_report_database_win.cc(426)] unexpected header
+[0407/041321.900:ERROR:crash_report_database_win.cc(426)] unexpected header
+[0407/042821.901:ERROR:crash_report_database_win.cc(426)] unexpected header
+[0407/044321.903:ERROR:crash_report_database_win.cc(426)] unexpected header
+[0407/045821.913:ERROR:crash_report_database_win.cc(426)] unexpected header
+[0407/050342.664:ERROR:process_reader_win.cc(142)] SuspendThread: Access is denied. (0x5)
+[0407/050342.664:ERROR:exception_snapshot_win.cc(87)] thread ID 7456 not found in process
+[0407/050342.668:WARNING:crash_report_exception_handler.cc(60)] ProcessSnapshotWin::Initialize failed
+[0407/051321.919:ERROR:crash_report_database_win.cc(426)] unexpected header

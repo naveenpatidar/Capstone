@@ -32,11 +32,12 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ionicCalendarDisplay
         controller: 'AppCtrl'
     })
 
-    .state('app.search', {
-        url: '/search',
+    .state('app.email', {
+        url: '/email',
         views: {
             'menuContent': {
-                templateUrl: 'templates/search.html'
+                templateUrl: 'templates/email.html',
+                controller: 'EmailCtrl'
             }
         }
     })
@@ -45,7 +46,8 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ionicCalendarDisplay
             url: '/profile',
             views: {
                 'menuContent': {
-                    templateUrl: 'templates/profile.html'
+                    templateUrl: 'templates/profile.html',
+                    controller: 'ProfileCtrl'
                 }
             }
         })
@@ -59,17 +61,17 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ionicCalendarDisplay
             }
         })
 
-    .state('app.single', {
-        url: '/home/:playlistId',
+    .state('app.login', {
+        url: '/login',
         views: {
             'menuContent': {
-                templateUrl: 'templates/itemlist.html',
-                controller: 'ItemlistCtrl'
+                templateUrl: 'templates/login.html',
+                controller: 'LoginCtrl'
             }
         }
     });
     // if none of the above states are matched, use this as the fallback
-    $urlRouterProvider.otherwise('/app/home');
+    $urlRouterProvider.otherwise('/app/login');
 });
 
 
