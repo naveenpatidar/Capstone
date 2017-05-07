@@ -1,14 +1,14 @@
 <ion-view view-title="Home">
     <ion-content scroll="true" has-bouncing="false">
-        <div class="list">
-        </div>
         <!-- 
 					display : used for ngmodel to fetch the selected date.
 					dateformat : used to put the Format for display 
 				-->
         <my-calendar display="dateValue" dateformat="'dd-MMM-yyyy'"></my-calendar>
         <hr/>
-
+        <canvas style="height:175px" id="line" class="chart chart-line" chart-data="data" chart-labels="labels" chart-series="series" chart-options="options" chart-dataset-override="datasetOverride" chart-click="onClick">
+        </canvas>
+        <hr/>
         <div>
             <!--            <label class="item item-input">
 			<input type="text" ng-model="dateValue" disabled>
@@ -20,18 +20,17 @@
             <!--<button class="button" ng-click="emailFile()">Email Files</button>-->
             <!--           <span>&nbsp;</span>
             <button class="button" ng-click="showAvg()">Show Avg</button>-->
-            <span>&nbsp;</span>
-            <button class="button" ng-click="plotGraph()">Plot Graph</button>
+            <!--<span>&nbsp;</span>
+            <button class="button" ng-click="plotGraph()">Plot Graph</button>-->
             <!--<span>&nbsp;</span>
             <button class="button" ng-click="click()">click</button>-->
-            <hr/>
             <!--<div ng-bind-html="showFileName"></div>-->
             <div ng-bind-html="avgdiv"></div>
-            <ion-list>
+            <!--<ion-list>
                 <ion-item ng-repeat="file in files" ng-click="readFileAtGivenPath(file.name)">
                     {{file.name}}
                 </ion-item>
-            </ion-list>
+            </ion-list>-->
             <div ng-bind-html="selectdiv"></div>
         </div>
     </ion-content>

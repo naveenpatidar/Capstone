@@ -1,47 +1,9 @@
-angular.module('starter.controllers', [])
+angular.module('starter.controllers', ['chart.js'])
 
-.controller('AppCtrl', function($scope, $ionicModal, $timeout) {
-
-    /*    // With the new view caching in Ionic, Controllers are only called
-        // when they are recreated or on app start, instead of every page change.
-        // To listen for when this page is active (for example, to refresh data),
-        // listen for the $ionicView.enter event:
-        //$scope.$on('$ionicView.enter', function(e) {
-        //});
-
-        // Form data for the login modal
-        $scope.loginData = {};
-
-        // Create the login modal that we will use later
-        $ionicModal.fromTemplateUrl('templates/login.html', {
-            scope: $scope
-        }).then(function(modal) {
-            $scope.modal = modal;
-        });
-
-        // Triggered in the login modal to close it
-        $scope.closeLogin = function() {
-            $scope.modal.hide();
-        };
-
-        // Open the login modal
-        $scope.login = function() {
-            $scope.modal.show();
-        };
-
-        // Perform the login action when the user submits the login form
-        $scope.doLogin = function() {
-            console.log('Doing login', $scope.loginData);
-
-            // Simulate a login delay. Remove this and replace with your login
-            // code if using a login system
-            $timeout(function() {
-                $scope.closeLogin();
-            }, 1000);
-        };*/
-})
+.controller('AppCtrl', function($scope) {})
 
 .controller('HomeCtrl', function($scope, $rootScope, $cordovaFile, $cordovaEmailComposer, $q) {
+
     /*    $scope.deleteAllFile = function() {
                 window.resolveLocalFileSystemURL(cordova.file.externalDataDirectory,
                     function(fileSystem) {
@@ -175,7 +137,7 @@ angular.module('starter.controllers', [])
                                         for (n = 0; n < data.length; n++) {
                                             avg = avg + parseFloat(data[n]);
                                         }
-                                        $scope.avgdiv = (avg / data.length).toFixed(5);
+                                        $scope.avgdiv = "Average of the selected day is :  " + (avg / data.length).toFixed(5);
                                     },
                                     function(error) {
                                         console.log(error);
@@ -198,8 +160,9 @@ angular.module('starter.controllers', [])
 
 
     //plot graph
-    $scope.plotGraph = function() {
-        var month_year = $rootScope.todays_date.substring(3, 11);
+    $rootScope.plotGraph = function(month_year) {
+        $scope.avgdiv = "";
+        //var month_year = $rootScope.todays_date.substring(3, 11);
         window.resolveLocalFileSystemURL(cordova.file.externalDataDirectory + "/naveen",
             function(fileSystem) {
                 var reader = fileSystem.createReader();
@@ -215,7 +178,7 @@ angular.module('starter.controllers', [])
                         var filenames = [];
                         var functionCalls = [];
                         for (j = 0; j < entries.length; j++) {
-                            if (entries[j].isDirectory) {
+                            if (entries[j].isDirectory && entries[j].name.includes(month_year)) {
                                 curr_count++;
                                 (function(j, curr_count, filenames) {
                                     $scope.readDayDirectory(entries, filenames, i, j, total_dirs, curr_count, functionCalls);
@@ -230,11 +193,11 @@ angular.module('starter.controllers', [])
                                         var msg = "";
                                         data.sort();
                                         $scope.showMonthwiseAvg(data);
-                                        console.log("naveensuccessfull " + data.length);
+                                        /*console.log("naveensuccessfull " + data.length);
                                         for (n = 0; n < data.length; n++) {
                                             msg = msg + data[n] + "<br/>";
                                         }
-                                        $scope.avgdiv = $scope.avgdiv + msg;
+                                        $scope.avgdiv = $scope.avgdiv + msg;*/
                                     },
                                     function(error) {
                                         console.log(error);
@@ -319,6 +282,7 @@ angular.module('starter.controllers', [])
 
     $scope.showMonthwiseAvg = function(data) {
         var keyset = [];
+        var valset = [];
         for (i = 0; i < data.length; i++) {
             var key = data[i].split(" ")[0];
             if (!keyset.includes(key)) {
@@ -338,15 +302,64 @@ angular.module('starter.controllers', [])
                     break;
                 }
             }
-            msg = msg + keyset[i] + " " + (avg / counter).toFixed(5) + "<br/>";
+            //msg = msg + keyset[i] + " " + (avg / counter).toFixed(5) + "<br/>";
+            valset.push((avg / counter).toFixed(5));
         }
-        $scope.avgdiv = msg;
+        if (keyset.length == 0) {
+            keyset.push("");
+            valset.push("");
+        }
+        $scope.draw(keyset, valset);
+        //$scope.avgdiv = msg;
+    }
+
+    $scope.draw = function(keyset, valset) {
+        $scope.labels = keyset;
+        //$scope.labels = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30"];
+        //$scope.labels = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
+        $scope.series = ['Data'];
+        $scope.data = [
+            valset
+            //[, , .80, .81, , .55, .40, -.65, .59, .80, -.81, .56, .55, 0, .65, .59, 0, .81, -.56, -.55, 0, .65, .59, .80, .81, -.56, .55, 0, .70, 0.2]
+            //[.65, .59, .80, .81, -.56, .55, .40, -.65, .59, .80, .65, .59, .80, .81, -.56, .55, .40, -.65, .59, .80]
+        ];
+        $scope.onClick = function(points, evt) {
+            console.log(points, evt);
+        };
+        $scope.datasetOverride = [{ yAxisID: 'y-axis-1' }];
+        $scope.options = {
+            scales: {
+                xAxes: [{
+                    position: 'bottom',
+                    ticks: {
+                        autoSkip: true,
+                        maxTicksLimit: 20
+                    },
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Date'
+                    }
+                }],
+                yAxes: [{
+                    id: 'y-axis-1',
+                    type: 'linear',
+                    display: true,
+                    position: 'left',
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Sensor Value'
+                    }
+                }],
+            },
+            showLines: true,
+            spanGaps: true
+        };
     }
 })
 
 
 .controller('EmailCtrl', function($scope, $rootScope, $cordovaEmailComposer) {
-    $scope.destEmail = 'naveen15038@iiitd.ac.in';
+    $scope.destEmail = $rootScope._email;
     $scope.emailSubject = 'Sensor Data File';
     $scope.emailBody = 'Files attached till ' + $rootScope.todays_date;
     // Email File function
@@ -438,6 +451,7 @@ angular.module('starter.controllers', [])
                 localStorage.setItem("imageUrl", obj.imageUrl);*/
                 $rootScope._name = obj.displayName;
                 $rootScope._imgUrl = obj.imageUrl;
+                $rootScope._email = obj.email;
                 $ionicHistory.nextViewOptions({
                     disableBack: true
                 });
@@ -455,6 +469,7 @@ angular.module('starter.controllers', [])
     $scope.imgurl = localStorage.getItem("imageUrl");*/
     $scope.name = $rootScope._name;
     $scope.imgurl = $rootScope._imgUrl;
+    $scope.email = $rootScope._email;
     $scope.logout = function() {
         window.plugins.googleplus.logout(
             function(msg) {

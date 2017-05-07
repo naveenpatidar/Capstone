@@ -1,14 +1,24 @@
 <ion-view view-title="Profile">
     <ion-content scroll="true" has-bouncing="false">
-        <div>
+        <div style="width:85%;margin: auto;z-index: 2;position: relative;"><br/><br/>
             <div>
-                <center> <img ng-src="{{imgurl}}" width="200px" height="200px" ng-hide="value" /></center>
+                <center> <img style="border-radius: 50%;" ng-src="{{imgurl}}" width="200px" height="200px" ng-hide="value" /></center>
             </div>
+            <br/><br/>
             <div>
                 <center><input type="text" ng-model="name" /></center>
             </div>
             <br/> <br/>
-            <button class="button" ng-click="logout()">Logout</button>
+            <div>
+                <center><input type="email" ng-model="email" /></center>
+            </div>
+            <br/> <br/>
+            <center>
+                <button ion-button round class="button button-block button-assertive" ng-click="logout()">
+                   <span class = "ion-social-googleplus"></span>&nbsp;&nbsp;Logout from Account
+                </button>
+            </center>
+            <!--<center><button class="button" ng-click="logout()">Logout</button></center>-->
         </div>
     </ion-content>
 </ion-view>

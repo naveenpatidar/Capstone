@@ -72,6 +72,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ionicCalendarDisplay
     });
     // if none of the above states are matched, use this as the fallback
     $urlRouterProvider.otherwise('/app/login');
+    //$urlRouterProvider.otherwise('/app/home');
 });
 
 
@@ -124,6 +125,7 @@ modu.directive('myCalendar', function() {
                 selectedMonth = CurrentDate.getMonth(),
                 selectedDate = CurrentDate.getDate();
 
+
             $scope.UICalendarDisplay = {};
             $scope.UICalendarDisplay.Date = true;
             $scope.UICalendarDisplay.Month = false;
@@ -141,6 +143,10 @@ modu.directive('myCalendar', function() {
 
             //Onload Display Current Date
             $scope.displayCompleteDate();
+            document.addEventListener('deviceready', function() {
+                $rootScope.plotGraph(calMonths[selectedMonth].slice(0, 3) + "-" + selectedYear);
+            });
+
 
             $scope.UIdisplayDatetoMonth = function() {
                 $scope.UICalendarDisplay.Date = false;
@@ -175,6 +181,8 @@ modu.directive('myCalendar', function() {
                 $scope.UICalendarDisplay.Date = true;
                 $scope.UICalendarDisplay.Month = false;
                 $scope.UICalendarDisplay.Year = false;
+                var temp = calMonths[selectedMonth].slice(0, 3) + "-" + selectedYear;
+                $rootScope.plotGraph(temp);
                 $scope.displayCompleteDate();
             }
 
@@ -186,6 +194,8 @@ modu.directive('myCalendar', function() {
                 } else {
                     $scope.dislayMonth = selectedMonth--;
                 }
+                var temp = calMonths[selectedMonth].slice(0, 3) + "-" + selectedYear;
+                $rootScope.plotGraph(temp);
                 $scope.displayMonthCalendar();
             }
 
@@ -197,6 +207,8 @@ modu.directive('myCalendar', function() {
                 } else {
                     $scope.dislayMonth = selectedMonth++;
                 }
+                var temp = calMonths[selectedMonth].slice(0, 3) + "-" + selectedYear;
+                $rootScope.plotGraph(temp);
                 $scope.displayMonthCalendar();
             }
 
@@ -229,6 +241,8 @@ modu.directive('myCalendar', function() {
                 $scope.UICalendarDisplay.Date = false;
                 $scope.UICalendarDisplay.Month = true;
                 $scope.UICalendarDisplay.Year = false;
+                var temp = calMonths[selectedMonth].slice(0, 3) + "-" + selectedYear;
+                $rootScope.plotGraph(temp);
                 $scope.displayCompleteDate();
             }
 
@@ -239,6 +253,8 @@ modu.directive('myCalendar', function() {
                 $scope.UICalendarDisplay.Date = true;
                 $scope.UICalendarDisplay.Month = false;
                 $scope.UICalendarDisplay.Year = false;
+                var temp = calMonths[selectedMonth].slice(0, 3) + "-" + selectedYear;
+                $rootScope.plotGraph(temp);
                 $scope.displayCompleteDate();
             }
 
@@ -268,7 +284,6 @@ modu.directive('myCalendar', function() {
             }
 
             $scope.displayMonthCalendar = function() {
-
                 /*Year Display Start*/
                 $scope.startYearDisp = (Math.floor(selectedYear / 10) * 10) - 1;
                 $scope.endYearDisp = (Math.floor(selectedYear / 10) * 10) + 10;
@@ -327,6 +342,7 @@ modu.directive('myCalendar', function() {
                 }
             }
             $scope.displayMonthCalendar();
+
         }],
         templateUrl: "templates/calendar.html"
     };
