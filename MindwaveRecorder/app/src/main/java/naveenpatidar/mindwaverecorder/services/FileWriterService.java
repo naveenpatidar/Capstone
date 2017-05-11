@@ -76,7 +76,7 @@ public class FileWriterService extends Service {
                 stopSelf();
             //sharedPath = sharedContext.getFilesDir().getAbsolutePath() + "/naveen/";
             sharedPath = sharedContext.getExternalFilesDir(null).getAbsolutePath() + "/naveen/";
-            createDirectoryIfNeeded(sharedPath);
+            createDirectoryIfNeeded(sharedPath); // if naveen folder is not present in Mindwave reader directory
             bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
             BluetoothDevice remoteDevice = bluetoothAdapter.getRemoteDevice(address);
             tgStreamReader = createStreamReader(remoteDevice);
