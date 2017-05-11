@@ -76,6 +76,7 @@ public class FileWriterService extends Service {
                 stopSelf();
             //sharedPath = sharedContext.getFilesDir().getAbsolutePath() + "/naveen/";
             sharedPath = sharedContext.getExternalFilesDir(null).getAbsolutePath() + "/naveen/";
+            createDirectoryIfNeeded(sharedPath);
             bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
             BluetoothDevice remoteDevice = bluetoothAdapter.getRemoteDevice(address);
             tgStreamReader = createStreamReader(remoteDevice);
